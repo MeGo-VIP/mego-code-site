@@ -3,26 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة تحكم ميجو</title>
+    <title>لوحة تحكم ميجو | Control Panel</title>
     <style>
-        :root { --gold: #D4AF37; --dark: #0a0a0a; }
-        body { background: var(--dark); color: white; font-family: sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
-        .admin-card { background: #1a1a1a; border: 2px solid var(--gold); padding: 30px; border-radius: 20px; width: 90%; max-width: 400px; text-align: center; }
-        input, textarea { width: 100%; padding: 12px; margin: 10px 0; background: #252525; border: 1px solid #333; color: white; border-radius: 10px; box-sizing: border-box; }
-        button { width: 100%; padding: 15px; background: var(--gold); color: black; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 10px; }
-        #status { margin-top: 15px; padding: 10px; border-radius: 8px; display: none; }
+        :root { --gold: #D4AF37; --dark: #050505; --matrix: #00FF41; }
+        body { background: var(--dark); color: white; font-family: 'Courier New', monospace; margin: 0; padding: 20px; overflow-x: hidden; }
+        
+        /* تأثير خلفية الماتريكس البسيط */
+        body::before {
+            content: "101101001"; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            color: rgba(0, 255, 65, 0.05); font-size: 20px; word-break: break-all; z-index: -1; pointer-events: none;
+        }
+
+        .container { max-width: 800px; margin: auto; }
+        .card { background: rgba(20, 20, 20, 0.95); border: 1px solid var(--gold); border-radius: 15px; padding: 25px; margin-bottom: 30px; box-shadow: 0 0 15px rgba(212, 175, 55, 0.2); }
+        
+        h2 { color: var(--gold); border-bottom: 2px solid var(--gold); padding-bottom: 10px; text-transform: uppercase; letter-spacing: 2px; }
+        
+        input, textarea, select { width: 100%; padding: 12px; margin: 10px 0; background: #111; border: 1px solid #333; color: var(--gold); border-radius: 5px; box-sizing: border-box; }
+        input:focus { border-color: var(--matrix); outline: none; }
+        
+        button { width: 100%; padding: 15px; background: var(--gold); color: black; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 16px; }
+        button:hover { background: white; box-shadow: 0 0 10px var(--gold); }
+        
+        /* قسم الإدارة */
+        .course-item { display: flex; justify-content: space-between; align-items: center; background: #1a1a1a; padding: 15px; margin-bottom: 10px; border-right: 4px solid var(--gold); border-radius: 5px; }
+        .del-btn { background: #ff4d4d; color: white; width: auto; padding: 5px 15px; font-size: 13px; }
+        .del-btn:hover { background: white; color: red; }
+        
+        #status { padding: 10px; margin-top: 10px; border-radius: 5px; text-align: center; display: none; }
     </style>
 </head>
 <body>
 
-<div class="admin-card">
-    <h2 style="color:var(--gold)">👑 إدارة المحتوى</h2>
-    <input type="password" id="pass" placeholder="كلمة السر">
-    <input type="text" id="title" placeholder="اسم الكورس">
-    <textarea id="desc" placeholder="وصف الكورس"></textarea>
-    <input type="text" id="url" placeholder="رابط التحميل">
-    <button onclick="uploadData()">🚀 نشر الآن</button>
-    <div id="status"></div>
+<div class="container">
+    <h1 style="text-align: center; color: var(--gold);">SYSTEM ADMIN: MEGO CODE</h1>
+
+    <div class="card">
+        <h2>📂 إضافة محتوى جديد (كورس / صوت)</h2>
+        <input type="password" id="pass" placeholder="مفتاح الأمان الخاص بميجو">
+        <input type="text" id="title" placeholder="عنوان الكورس أو المقطع الصوتي">
+        <textarea id="desc" rows="3" placeholder="وصف المحتوى..."></textarea>
+        <input type="text" id="url" placeholder="رابط التحميل أو رابط ملف الصوت">
+        
+        <select id="type">
+            <option value="course">كورس / سورس كود</option>
+            <option value="audio">مقطع صوتي / Voice</option>
+        </select>
+
+        <button onclick="uploadData()">🚀 تشغيل الأمر / نـشـر</button>
+        <div id="status"></div>
+    </div>
+
+    <div class="card">
+        <h2>🛠️ إدارة المحتوى المنشور</h2>
+        <div id="admin-list">جاري فحص قاعدة البيانات...</div>
+    </div>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -35,52 +70,63 @@
         projectId: "mego-vip-site",
         databaseURL: "https://mego-vip-site-default-rtdb.firebaseio.com/"
     };
-
-    // تشغيل فايربيس
-    if (!firebase.apps.length) {
-        firebase.initializeApp(firebaseConfig);
-    }
+    firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
+    // دالة النشر
     function uploadData() {
         const pass = document.getElementById('pass').value;
         const title = document.getElementById('title').value;
         const desc = document.getElementById('desc').value;
         const url = document.getElementById('url').value;
+        const type = document.getElementById('type').value;
         const status = document.getElementById('status');
 
-        status.style.display = "block";
+        if(pass !== "mego2026") { alert("خطأ في مفتاح الأمان!"); return; }
 
-        if(pass !== "mego2026") {
-            status.innerText = "❌ كلمة السر غلط!";
-            status.style.background = "red";
-            return;
-        }
-
-        if(title && desc && url) {
-            status.innerText = "⏳ جاري الرفع...";
-            status.style.background = "orange";
-
-            // إرسال البيانات
-            db.ref('courses').push({
+        if(title && url) {
+            status.style.display = "block";
+            status.innerText = "Processing...";
+            db.ref('content').push({
                 title: title,
                 desc: desc,
-                url: url
+                url: url,
+                type: type,
+                date: new Date().toLocaleDateString('ar-EG')
             }).then(() => {
-                status.innerText = "✅ مبروك! تم النشر بنجاح";
-                status.style.background = "green";
-                document.getElementById('title').value = '';
-                document.getElementById('desc').value = '';
-                document.getElementById('url').value = '';
-            }).catch(err => {
-                status.innerText = "❌ خطأ: " + err.message;
-                status.style.background = "red";
-                console.error(err);
+                status.innerText = "✅ تم الإرسال للنظام بنجاح!";
+                location.reload(); 
             });
+        }
+    }
+
+    // جلب البيانات للحذف
+    db.ref('content').on('value', (snapshot) => {
+        const list = document.getElementById('admin-list');
+        list.innerHTML = '';
+        const data = snapshot.val();
+        for (let id in data) {
+            list.innerHTML += `
+                <div class="course-item">
+                    <div>
+                        <strong>${data[id].title}</strong> <br>
+                        <small style="color:#888">${data[id].type === 'audio' ? '🔊 صوت' : '📚 كورس'}</small>
+                    </div>
+                    <button class="del-btn" onclick="deleteItem('${id}')">حذف 🗑️</button>
+                </div>
+            `;
+        }
+    });
+
+    // دالة الحذف
+    function deleteItem(id) {
+        const pass = document.getElementById('pass').value;
+        if(pass === "mego2026") {
+            if(confirm("هل أنت متأكد من حذف هذا العنصر؟")) {
+                db.ref('content').child(id).remove();
+            }
         } else {
-            status.innerText = "⚠️ كمل الخانات!";
-            status.style.background = "yellow";
-            status.style.color = "black";
+            alert("يرجى كتابة كلمة السر في خانة (مفتاح الأمان) أولاً لتتمكن من الحذف!");
         }
     }
 </script>
