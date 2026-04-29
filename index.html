@@ -1039,6 +1039,107 @@
       }
     }
 
+  
+.fab { width: 42px !important; min-height: 95px !important; font-size: 0.75rem !important; }
+.fab span:first-child { font-size: 1.1rem !important; }
+
+[data-i18n="hero_desc"] {
+  font-family: "Courier New", monospace;
+  text-shadow: 0 0 10px var(--gold);
+  animation: cyberGlow 2s infinite alternate;
+}
+
+@keyframes cyberGlow {
+  from { opacity: 0.8; text-shadow: 0 0 5px var(--gold); }
+  to { opacity: 1; text-shadow: 0 0 20px var(--gold-2); }
+}
+
+.dynamic-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  margin: 30px 0;
+}
+
+.mego-dynamic-card {
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  padding: 15px;
+  border-radius: 18px;
+  transition: 0.3s;
+}
+
+.mego-dynamic-card:hover {
+  border-color: var(--gold);
+  box-shadow: var(--shadow);
+  transform: translateY(-3px);
+}
+
+.video-frame {
+  position: relative;
+  padding-bottom: 56.25%;
+  height: 0;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-top: 10px;
+}
+
+.video-frame iframe {
+  position: absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  border:none;
+}
+
+.btn-mego-dl {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  background: var(--gold);
+  color: #000;
+  text-align: center;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+  
+.brand-link {
+  display: block;
+  margin: 4px 0 0;
+  font-size: .82rem;
+  color: var(--gold);
+  text-decoration: none;
+  transition: 0.3s;
+}
+.brand-link:hover {
+  color: var(--gold-2);
+  text-shadow: 0 0 10px var(--gold);
+}
+
+  
+.brand-info-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-top: 4px;
+}
+.cyber-clock {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 0.85rem;
+  color: var(--gold-2);
+  text-shadow: 0 0 8px var(--gold);
+  background: rgba(212, 175, 55, 0.1);
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  letter-spacing: 1px;
+  font-weight: bold;
+}
+
   </style>
 </head>
 <body>
@@ -1064,7 +1165,10 @@
         <div class="brand-mark">⌬</div>
         <div class="brand-text">
           <h1 data-i18n="brandTitle">ميجو اليوتيوبر | واجهة سيبرانية فاخرة</h1>
-          <p data-i18n="brandSubtitle">Luxury Black × Gold • Cyber UI • Single Page Application</p>
+          <div class="brand-info-row">
+            <a href="https://wa.me/201212585636" target="_blank" class="brand-link" data-i18n="brandSubtitle">01212585636</a>
+            <div id="cyber-clock" class="cyber-clock">00:00:00 PM</div>
+          </div>
         </div>
       </div>
 
@@ -1072,6 +1176,8 @@
         <nav class="nav-pills" aria-label="Navigation">
           <button class="nav-btn active" data-page="home" data-i18n="navHome">الرئيسية</button>
           <button class="nav-btn" data-page="courses" data-i18n="navCourses">الكورسات</button>
+          <button class="nav-btn" data-page="my-courses" data-i18n="navMyCourses">كورسـاتي</button>
+          <button class="nav-btn" data-page="your-videos" data-i18n="navYourVideos">فيديوهاتك</button>
           <button class="nav-btn" data-page="about" data-i18n="navAbout">حول المطور</button>
         </nav>
 
@@ -1267,7 +1373,27 @@
         </div>
       </div>
     </section>
-  </main>
+  
+    
+
+    
+
+    
+    <section class="page" id="page-my-courses">
+      <div class="section-title">
+        <h3 data-i18n="myCoursesTitle">قسم كورسـاتي</h3>
+      </div>
+      <div class="dynamic-grid" id="courses-container"></div>
+    </section>
+
+    <section class="page" id="page-your-videos">
+      <div class="section-title">
+        <h3 data-i18n="yourVideosTitle">قسم فيديوهاتك</h3>
+      </div>
+      <div class="dynamic-grid" id="videos-container"></div>
+    </section>
+
+    </main>
 
     <footer data-i18n="footer">جميع الحقوق محفوظة لميجو اليوتيوبر © 2026</footer>
 
@@ -1275,14 +1401,14 @@
     (() => {
       "use strict";
 
-      const translations = {"ar": {"siteName": "ميجو اليوتيوبر", "metaDescription": "واجهة احترافية ثنائية اللغة بطابع سيبراني ذهبي وأسود لميجو اليوتيوبر.", "brandTitle": "ميجو اليوتيوبر | واجهة سيبرانية فاخرة", "brandSubtitle": "Luxury Black × Gold • Cyber UI • Single Page Application", "navHome": "الرئيسية", "navCourses": "الكورسات", "navAbout": "حول المطور", "fabCourses": "كورساتي", "fabAbout": "من أنا", "homeEyebrow": "✦ الصفحة الرئيسية", "homeTitle": "أهلاً بكم في عالم ميجو اليوتيوبر", "homeText": "تصميم احترافي بطابع سيبراني فاخر، مخصص لعرض الهوية الرقمية، القنوات، والخدمات التعليمية بأسلوب عصري غني بالتأثيرات البصرية والانيميشن الناعم.", "homeCoursesBtn": "استعرض الكورسات", "homeAboutBtn": "تعرّف عليّ أكثر", "badgeResponsive": "واجهة Responsive", "badgeBlackGold": "Black & Gold UI", "badgeGlass": "Glassmorphism Cards", "badgeGlow": "Cyber Glow Effects", "platformsTitle": "روابط المنصات", "platformsText": "تم تحديث روابط المنصات الأساسية وربط أيقونة يوتيوب بالقناة الرسمية.", "socialYoutubeTitle": "قناة يوتيوب", "socialYoutubeText": "ادخل مباشرة إلى القناة الرسمية على يوتيوب لمتابعة الشروحات والدروس والمحتوى الجديد.", "socialTelegramTitle": "قناة تيليجرام", "socialTelegramText": "انضم إلى القناة على تيليجرام لمتابعة التحديثات والمنشورات والمحتوى الجديد.", "socialWhatsappTitle": "قناة واتساب", "socialWhatsappText": "تابع القناة على واتساب للوصول السريع للمحتوى والإعلانات المهمة.", "socialFacebookTitle": "صفحة فيسبوك", "socialFacebookText": "بطاقة جاهزة لربط الصفحة الرسمية على فيسبوك بعد إضافة الرابط المطلوب.", "facebookPending": "رابط صفحة فيسبوك غير مضاف حالياً.", "coursesPageTitle": "صفحة الكورسات", "coursesPageText": "اضغط على أي بطاقة ليتم فتح تيليجرام برسالة جاهزة تلقائياً.", "bannerOffer": "خصم لفترة محدودة", "bannerPrice": "400 جنيه بدلاً من 650 - 800 جنيه", "courseDesc": "اضغط لفتح تيليجرام وإرسال رسالة الاشتراك الجاهزة مباشرة.", "courseCta": "اطلب الآن عبر تيليجرام ←", "aboutTitle": "حول المطور", "aboutText": "نبذة احترافية وهوية شخصية بطابع تقني فاخر.", "profileName": "Mego The YouTuber (محمد سلامة)", "profileRole": "مطور أندرويد ومحلل أمن سيبراني", "profileBio": "هوية تقنية تجمع بين تطوير التطبيقات، الواجهات الحديثة، ونشر الوعي الأمني الرقمي بطريقة عملية وواضحة.", "aboutBlock1Title": "نبذة", "aboutBlock1Text": "مرحباً بيك في أقوى قناة عربية بتجمع كل ما يخص عالم الأمن السيبراني، البرمجة، التخصيص، وتطوير التطبيقات والموبايل فقط. القناة بإدارة ميجو اليوتيوبر. بدأت رحلتي في هذا المجال منذ عام 2017. وأفتخر بكوني أول مصري صانع 35 مشروع ديني احترافي وبإذن الله قريباً على متجر بلاي.", "aboutBlock2Title": "محتوى القناة", "list1": "شروحات تقنية وتخصيص احترافية للتطبيقات ضمن استخدامات قانونية وآمنة.", "list2": "كورسات توعوية عن الهكر الأخلاقي والتعامل الآمن مع الأجهزة.", "list3": "مفاهيم الاختبار الأمني المصرّح به لفهم الهجمات وكيفية الوقاية منها.", "list4": "سلسلة حماية قوية ضد الاختراق والتجسس وكيف تأمّن بياناتك.", "list5": "فهم الهندسة العكسية وأمن التطبيقات بشكل تعليمي لحماية مشاريعك.", "aboutBlock3Title": "الهدف", "aboutBlock3Text": "هدفنا الأساسي: نوصل ليك المعلومة ببساطة وبشكل عملي وقانوني، ونعلّمك إزاي تفهم العالم التقني اللي حواليك وتحمي نفسك خطوة بخطوة. المحتوى موجّه لتعليم الهكر الأخلاقي بأسلوب يتوافق مع سياسات يوتيوب وفيسبوك. كل المحتوى تعليمي وتوعوي فقط، وموجه للمبتدئين والمحترفين في نفس الوقت. كل فترة هنزل سلسلة جديدة كاملة.", "skillsTitle": "المهارات", "contactTitle": "روابط التواصل", "contactYoutubeTitle": "قناة يوتيوب", "contactYoutubeText": "القناة الرسمية على يوتيوب", "contactTelegramChannelTitle": "قناة تيليجرام", "contactTelegramChannelText": "انضم لقناة تيليجرام الرسمية", "contactTelegramUserTitle": "حساب تيليجرام", "contactTelegramUserText": "تواصل مباشر عبر تيليجرام", "footer": "جميع الحقوق محفوظة لميجو اليوتيوبر © 2026", "shieldTitle": "تم تفعيل طبقة الحماية", "shieldTextDefault": "عند فقدان التركيز أو محاولة الالتقاط، يتم تفعيل طبقة حماية مرئية بشكل مؤقت.", "toastActionDisabled": "هذا الإجراء معطل على هذه الصفحة.", "toastInspectDisabled": "اختصارات الفحص معطلة في هذه الواجهة.", "shieldScreenshot": "تم تفعيل الطبقة الوقائية بسبب محاولة التقاط الشاشة.", "shieldHidden": "تم إخفاء المحتوى مؤقتاً لحماية الصفحة عند فقدان التركيز.", "shieldBlur": "تم تفعيل الحماية عند خروجك من الصفحة أو تغيير التركيز.", "printDisabled": "الطباعة معطلة على هذه الصفحة.", "switchLabel": "التبديل إلى الإنجليزية", "pageTitles": {"home": "ميجو اليوتيوبر | الرئيسية", "courses": "ميجو اليوتيوبر | الكورسات", "about": "ميجو اليوتيوبر | حول المطور"}}, "en": {"siteName": "Mego The YouTuber", "metaDescription": "A bilingual luxury cyber interface in black and gold for Mego The YouTuber.", "brandTitle": "Mego The YouTuber | Luxury Cyber Interface", "brandSubtitle": "Luxury Black × Gold • Cyber UI • Single Page Application", "navHome": "Home", "navCourses": "Courses", "navAbout": "About", "fabCourses": "My Courses", "fabAbout": "Who Am I", "homeEyebrow": "✦ Home Page", "homeTitle": "Welcome to Mego The YouTuber World", "homeText": "A premium cyber-themed interface built to showcase digital identity, channels, and educational services with modern visuals, elegant motion, and a luxury black-and-gold feel.", "homeCoursesBtn": "Browse Courses", "homeAboutBtn": "Know More About Me", "badgeResponsive": "Responsive Interface", "badgeBlackGold": "Black & Gold UI", "badgeGlass": "Glassmorphism Cards", "badgeGlow": "Cyber Glow Effects", "platformsTitle": "Platform Links", "platformsText": "Primary platform links were updated and the YouTube icon now points to the official channel.", "socialYoutubeTitle": "YouTube Channel", "socialYoutubeText": "Jump directly to the official YouTube channel for tutorials, lessons, and the latest content.", "socialTelegramTitle": "Telegram Channel", "socialTelegramText": "Join the Telegram channel for updates, announcements, and fresh content.", "socialWhatsappTitle": "WhatsApp Channel", "socialWhatsappText": "Follow the WhatsApp channel for quick access to content and important notices.", "socialFacebookTitle": "Facebook Page", "socialFacebookText": "A ready card for linking the official Facebook page once the URL is added.", "facebookPending": "The Facebook page link has not been added yet.", "coursesPageTitle": "Courses Page", "coursesPageText": "Click any card to open Telegram instantly with a ready-to-send message.", "bannerOffer": "Limited-Time Offer", "bannerPrice": "400 EGP instead of 650 - 800 EGP", "courseDesc": "Click to open Telegram and send the ready subscription message instantly.", "courseCta": "Order now via Telegram →", "aboutTitle": "About the Developer", "aboutText": "A professional bio and personal identity with a premium technical style.", "profileName": "Mego The YouTuber (Mohamed Salama)", "profileRole": "Android Developer & CyberSecurity Analyst", "profileBio": "A technical identity that combines app development, modern interfaces, and practical digital security awareness.", "aboutBlock1Title": "Overview", "aboutBlock1Text": "Welcome to one of the strongest Arabic channels focused on cybersecurity, programming, customization, and mobile app development. The channel is managed by Mego The YouTuber. I started my journey in this field in 2017, and I am proud to be the first Egyptian creator of 35 professional religious projects, coming soon to Google Play, God willing.", "aboutBlock2Title": "Channel Content", "list1": "Professional technical tutorials and customization for apps within safe and legal use cases.", "list2": "Awareness courses about ethical hacking and safe device handling.", "list3": "Authorized security testing concepts to understand attacks and prevention methods.", "list4": "A strong protection series against hacking and spying to help secure your data.", "list5": "Educational reverse engineering and app security concepts to protect your own projects.", "aboutBlock3Title": "Goal", "aboutBlock3Text": "Our main goal is to deliver knowledge simply, practically, and legally, while teaching you how to understand the tech world around you and protect yourself step by step. The content presents ethical hacking education in a style aligned with YouTube and Facebook policies. Everything here is educational and awareness-focused for both beginners and advanced users, with new full series released regularly.", "skillsTitle": "Skills", "contactTitle": "Contact Links", "contactYoutubeTitle": "YouTube Channel", "contactYoutubeText": "Official YouTube channel", "contactTelegramChannelTitle": "Telegram Channel", "contactTelegramChannelText": "Join the official Telegram channel", "contactTelegramUserTitle": "Telegram User", "contactTelegramUserText": "Direct contact via Telegram", "footer": "All rights reserved to Mego The YouTuber © 2026", "shieldTitle": "Protection Layer Enabled", "shieldTextDefault": "When focus is lost or a capture attempt is detected, a temporary visual shield is activated.", "toastActionDisabled": "This action is disabled on this page.", "toastInspectDisabled": "Inspection shortcuts are disabled in this interface.", "shieldScreenshot": "The visual shield was activated due to a screenshot attempt.", "shieldHidden": "Content was temporarily hidden to protect the page when focus was lost.", "shieldBlur": "Protection was enabled when the page lost focus.", "printDisabled": "Printing is disabled on this page.", "switchLabel": "Switch to Arabic", "pageTitles": {"home": "Mego The YouTuber | Home", "courses": "Mego The YouTuber | Courses", "about": "Mego The YouTuber | About"}}};
+      const translations = {"ar": {"hero_desc": "واجهة CYBER UI متطورة | نظام سحابي | تجربة UX فاخرة", "siteName": "ميجو اليوتيوبر", "metaDescription": "واجهة احترافية ثنائية اللغة بطابع سيبراني ذهبي وأسود لميجو اليوتيوبر.", "brandTitle": "ميجو اليوتيوبر | واجهة سيبرانية فاخرة", "brandSubtitle": "01212585636", "navHome": "الرئيسية", "navCourses": "الكورسات", "navMyCourses": "كورسـاتي", "navYourVideos": "فيديوهاتك", "navAbout": "حول المطور", "fabCourses": "كورساتي", "fabAbout": "من أنا", "homeEyebrow": "✦ الصفحة الرئيسية", "homeTitle": "أهلاً بكم في عالم ميجو اليوتيوبر", "homeText": "تصميم احترافي بطابع سيبراني فاخر، مخصص لعرض الهوية الرقمية، القنوات، والخدمات التعليمية بأسلوب عصري غني بالتأثيرات البصرية والانيميشن الناعم.", "homeCoursesBtn": "استعرض الكورسات", "homeAboutBtn": "تعرّف عليّ أكثر", "badgeResponsive": "واجهة Responsive", "badgeBlackGold": "Black & Gold UI", "badgeGlass": "Glassmorphism Cards", "badgeGlow": "Cyber Glow Effects", "platformsTitle": "روابط المنصات", "platformsText": "تم تحديث روابط المنصات الأساسية وربط أيقونة يوتيوب بالقناة الرسمية.", "socialYoutubeTitle": "قناة يوتيوب", "socialYoutubeText": "ادخل مباشرة إلى القناة الرسمية على يوتيوب لمتابعة الشروحات والدروس والمحتوى الجديد.", "socialTelegramTitle": "قناة تيليجرام", "socialTelegramText": "انضم إلى القناة على تيليجرام لمتابعة التحديثات والمنشورات والمحتوى الجديد.", "socialWhatsappTitle": "قناة واتساب", "socialWhatsappText": "تابع القناة على واتساب للوصول السريع للمحتوى والإعلانات المهمة.", "socialFacebookTitle": "صفحة فيسبوك", "socialFacebookText": "بطاقة جاهزة لربط الصفحة الرسمية على فيسبوك بعد إضافة الرابط المطلوب.", "facebookPending": "رابط صفحة فيسبوك غير مضاف حالياً.", "coursesPageTitle": "صفحة الكورسات", "myCoursesTitle": "قسم كورسـاتي", "yourVideosTitle": "قسم فيديوهاتك", "coursesPageText": "اضغط على أي بطاقة ليتم فتح تيليجرام برسالة جاهزة تلقائياً.", "bannerOffer": "خصم لفترة محدودة", "bannerPrice": "400 جنيه بدلاً من 650 - 800 جنيه", "courseDesc": "اضغط لفتح تيليجرام وإرسال رسالة الاشتراك الجاهزة مباشرة.", "courseCta": "اطلب الآن عبر تيليجرام ←", "aboutTitle": "حول المطور", "aboutText": "نبذة احترافية وهوية شخصية بطابع تقني فاخر.", "profileName": "Mego The YouTuber (محمد سلامة)", "profileRole": "مطور أندرويد ومحلل أمن سيبراني", "profileBio": "هوية تقنية تجمع بين تطوير التطبيقات، الواجهات الحديثة، ونشر الوعي الأمني الرقمي بطريقة عملية وواضحة.", "aboutBlock1Title": "نبذة", "aboutBlock1Text": "مرحباً بيك في أقوى قناة عربية بتجمع كل ما يخص عالم الأمن السيبراني، البرمجة، التخصيص، وتطوير التطبيقات والموبايل فقط. القناة بإدارة ميجو اليوتيوبر. بدأت رحلتي في هذا المجال منذ عام 2017. وأفتخر بكوني أول مصري صانع 35 مشروع ديني احترافي وبإذن الله قريباً على متجر بلاي.", "aboutBlock2Title": "محتوى القناة", "list1": "شروحات تقنية وتخصيص احترافية للتطبيقات ضمن استخدامات قانونية وآمنة.", "list2": "كورسات توعوية عن الهكر الأخلاقي والتعامل الآمن مع الأجهزة.", "list3": "مفاهيم الاختبار الأمني المصرّح به لفهم الهجمات وكيفية الوقاية منها.", "list4": "سلسلة حماية قوية ضد الاختراق والتجسس وكيف تأمّن بياناتك.", "list5": "فهم الهندسة العكسية وأمن التطبيقات بشكل تعليمي لحماية مشاريعك.", "aboutBlock3Title": "الهدف", "aboutBlock3Text": "هدفنا الأساسي: نوصل ليك المعلومة ببساطة وبشكل عملي وقانوني، ونعلّمك إزاي تفهم العالم التقني اللي حواليك وتحمي نفسك خطوة بخطوة. المحتوى موجّه لتعليم الهكر الأخلاقي بأسلوب يتوافق مع سياسات يوتيوب وفيسبوك. كل المحتوى تعليمي وتوعوي فقط، وموجه للمبتدئين والمحترفين في نفس الوقت. كل فترة هنزل سلسلة جديدة كاملة.", "skillsTitle": "المهارات", "contactTitle": "روابط التواصل", "contactYoutubeTitle": "قناة يوتيوب", "contactYoutubeText": "القناة الرسمية على يوتيوب", "contactTelegramChannelTitle": "قناة تيليجرام", "contactTelegramChannelText": "انضم لقناة تيليجرام الرسمية", "contactTelegramUserTitle": "حساب تيليجرام", "contactTelegramUserText": "تواصل مباشر عبر تيليجرام", "footer": "جميع الحقوق محفوظة لميجو اليوتيوبر © 2026", "shieldTitle": "تم تفعيل طبقة الحماية", "shieldTextDefault": "عند فقدان التركيز أو محاولة الالتقاط، يتم تفعيل طبقة حماية مرئية بشكل مؤقت.", "toastActionDisabled": "هذا الإجراء معطل على هذه الصفحة.", "toastInspectDisabled": "اختصارات الفحص معطلة في هذه الواجهة.", "shieldScreenshot": "تم تفعيل الطبقة الوقائية بسبب محاولة التقاط الشاشة.", "shieldHidden": "تم إخفاء المحتوى مؤقتاً لحماية الصفحة عند فقدان التركيز.", "shieldBlur": "تم تفعيل الحماية عند خروجك من الصفحة أو تغيير التركيز.", "printDisabled": "الطباعة معطلة على هذه الصفحة.", "switchLabel": "التبديل إلى الإنجليزية", "pageTitles": {"home": "ميجو اليوتيوبر | الرئيسية", "courses": "ميجو اليوتيوبر | الكورسات", "about": "ميجو اليوتيوبر | حول المطور", "my-courses": "ميجو اليوتيوبر | كورسـاتي", "your-videos": "ميجو اليوتيوبر | فيديوهاتك"}}, "en": {"hero_desc": "Advanced CYBER UI | Cloud System | Premium UX Experience", "siteName": "Mego The YouTuber", "metaDescription": "A bilingual luxury cyber interface in black and gold for Mego The YouTuber.", "brandTitle": "Mego The YouTuber | Luxury Cyber Interface", "brandSubtitle": "01212585636", "navHome": "Home", "navCourses": "Courses", "navMyCourses": "My Courses", "navYourVideos": "Your Videos", "navAbout": "About", "fabCourses": "My Courses", "fabAbout": "Who Am I", "homeEyebrow": "✦ Home Page", "homeTitle": "Welcome to Mego The YouTuber World", "homeText": "A premium cyber-themed interface built to showcase digital identity, channels, and educational services with modern visuals, elegant motion, and a luxury black-and-gold feel.", "homeCoursesBtn": "Browse Courses", "homeAboutBtn": "Know More About Me", "badgeResponsive": "Responsive Interface", "badgeBlackGold": "Black & Gold UI", "badgeGlass": "Glassmorphism Cards", "badgeGlow": "Cyber Glow Effects", "platformsTitle": "Platform Links", "platformsText": "Primary platform links were updated and the YouTube icon now points to the official channel.", "socialYoutubeTitle": "YouTube Channel", "socialYoutubeText": "Jump directly to the official YouTube channel for tutorials, lessons, and the latest content.", "socialTelegramTitle": "Telegram Channel", "socialTelegramText": "Join the Telegram channel for updates, announcements, and fresh content.", "socialWhatsappTitle": "WhatsApp Channel", "socialWhatsappText": "Follow the WhatsApp channel for quick access to content and important notices.", "socialFacebookTitle": "Facebook Page", "socialFacebookText": "A ready card for linking the official Facebook page once the URL is added.", "facebookPending": "The Facebook page link has not been added yet.", "coursesPageTitle": "Courses Page", "myCoursesTitle": "My Courses Section", "yourVideosTitle": "Your Videos Section", "coursesPageText": "Click any card to open Telegram instantly with a ready-to-send message.", "bannerOffer": "Limited-Time Offer", "bannerPrice": "400 EGP instead of 650 - 800 EGP", "courseDesc": "Click to open Telegram and send the ready subscription message instantly.", "courseCta": "Order now via Telegram →", "aboutTitle": "About the Developer", "aboutText": "A professional bio and personal identity with a premium technical style.", "profileName": "Mego The YouTuber (Mohamed Salama)", "profileRole": "Android Developer & CyberSecurity Analyst", "profileBio": "A technical identity that combines app development, modern interfaces, and practical digital security awareness.", "aboutBlock1Title": "Overview", "aboutBlock1Text": "Welcome to one of the strongest Arabic channels focused on cybersecurity, programming, customization, and mobile app development. The channel is managed by Mego The YouTuber. I started my journey in this field in 2017, and I am proud to be the first Egyptian creator of 35 professional religious projects, coming soon to Google Play, God willing.", "aboutBlock2Title": "Channel Content", "list1": "Professional technical tutorials and customization for apps within safe and legal use cases.", "list2": "Awareness courses about ethical hacking and safe device handling.", "list3": "Authorized security testing concepts to understand attacks and prevention methods.", "list4": "A strong protection series against hacking and spying to help secure your data.", "list5": "Educational reverse engineering and app security concepts to protect your own projects.", "aboutBlock3Title": "Goal", "aboutBlock3Text": "Our main goal is to deliver knowledge simply, practically, and legally, while teaching you how to understand the tech world around you and protect yourself step by step. The content presents ethical hacking education in a style aligned with YouTube and Facebook policies. Everything here is educational and awareness-focused for both beginners and advanced users, with new full series released regularly.", "skillsTitle": "Skills", "contactTitle": "Contact Links", "contactYoutubeTitle": "YouTube Channel", "contactYoutubeText": "Official YouTube channel", "contactTelegramChannelTitle": "Telegram Channel", "contactTelegramChannelText": "Join the official Telegram channel", "contactTelegramUserTitle": "Telegram User", "contactTelegramUserText": "Direct contact via Telegram", "footer": "All rights reserved to Mego The YouTuber © 2026", "shieldTitle": "Protection Layer Enabled", "shieldTextDefault": "When focus is lost or a capture attempt is detected, a temporary visual shield is activated.", "toastActionDisabled": "This action is disabled on this page.", "toastInspectDisabled": "Inspection shortcuts are disabled in this interface.", "shieldScreenshot": "The visual shield was activated due to a screenshot attempt.", "shieldHidden": "Content was temporarily hidden to protect the page when focus was lost.", "shieldBlur": "Protection was enabled when the page lost focus.", "printDisabled": "Printing is disabled on this page.", "switchLabel": "Switch to Arabic", "pageTitles": {"home": "Mego The YouTuber | Home", "courses": "Mego The YouTuber | Courses", "about": "Mego The YouTuber | About", "my-courses": "Mego The YouTuber | My Courses", "your-videos": "Mego The YouTuber | Your Videos"}}};
       const courses = [{"slug": "information-gathering", "ar": "جمع المعلومات", "en": "Information Gathering"}, {"slug": "ethical-hacking", "ar": "الاختراق الأخلاقي", "en": "Ethical Hacking"}, {"slug": "python", "ar": "بايثون", "en": "Python"}, {"slug": "tool-development", "ar": "تطوير الأدوات", "en": "Tool Development"}, {"slug": "sketchware-pro", "ar": "سكتشوير برو", "en": "Sketchware Pro"}, {"slug": "data-app-manufacturing", "ar": "تصنيع البيانات والتطبيقات", "en": "Data & App Manufacturing"}, {"slug": "code-debugging", "ar": "تصحيح الأكواد", "en": "Code Debugging"}, {"slug": "full-termux-course", "ar": "كورس تيرمكس الكامل", "en": "Full Termux Course"}];
       const TELEGRAM_USERNAME = "MeGo_VIP";
       const html = document.documentElement;
       const pageMap = {
         home: document.getElementById("page-home"),
         courses: document.getElementById("page-courses"),
-        about: document.getElementById("page-about")
+        about: document.getElementById("page-about"), "my-courses": document.getElementById("page-my-courses"), "your-videos": document.getElementById("page-your-videos")
       };
 
       const navButtons = [...document.querySelectorAll("[data-page]")];
@@ -1545,9 +1671,74 @@
 
       applyLanguage(currentLang);
       showPage("home");
+      
+      function updateCyberClock() {
+        const now = new Date();
+        let hours = now.getHours();
+        const minutes = String(now.getMinutes()).padStart(2, "0");
+        const seconds = String(now.getSeconds()).padStart(2, "0");
+        const ampm = hours >= 12 ? "PM" : "AM";
+        hours = hours % 12;
+        hours = hours ? hours : 12; // the hour "0" should be "12"
+        const strTime = String(hours).padStart(2, "0") + ":" + minutes + ":" + seconds + " " + ampm;
+        const clockEl = document.getElementById("cyber-clock");
+        if (clockEl) clockEl.textContent = strTime;
+      }
+      setInterval(updateCyberClock, 1000);
+      updateCyberClock();
+
     })();
   </script>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v8c78df7c7c0f484497ecbca7046644da1771523124516" integrity="sha512-8DS7rgIrAmghBFwoOTujcf6D9rXvH8xm8JQ1Ja01h9QX8EzXldiszufYa4IFfKdLUKTTrnSFXLDkUEOTrZQ8Qg==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v8c78df7c7c0f484497ecbca7046644da1771523124516" integrity="sha512-8DS7rgIrAmghBFwoOTujcf6D9rXvH8xm8JQ1Ja01h9QX8EzXldiszufYa4IFfKdLUKTTrnSFXLDkUEOTrZQ8Qg==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+<script>
+var firebaseConfig = {
+  apiKey: "AIzaSyAnjhujvWjLe9Z2KsIm-82rRB-00oGiIRw",
+  databaseURL: "https://mego-vip-site-default-rtdb.firebaseio.com/"
+};
+
+firebase.initializeApp(firebaseConfig);
+var db = firebase.database();
+
+db.ref("content").on("value", function(snapshot) {
+  var data = snapshot.val();
+  
+  var coursesContainer = document.getElementById("courses-container");
+  var videosContainer = document.getElementById("videos-container");
+
+  if (!data) return;
+
+  coursesContainer.innerHTML = "";
+  videosContainer.innerHTML = "";
+
+  if (data.courses) {
+    Object.values(data.courses).forEach(item => {
+      coursesContainer.innerHTML += `
+        <div class="mego-dynamic-card">
+          <h3>${item.title}</h3>
+          <p>${item.desc}</p>
+          <a href="${item.link}" class="btn-mego-dl">Download</a>
+        </div>`;
+    });
+  }
+
+  if (data.videos) {
+    Object.values(data.videos).forEach(item => {
+      videosContainer.innerHTML += `
+        <div class="mego-dynamic-card">
+          <h3>${item.title}</h3>
+          <div class="video-frame">
+            <iframe src="${item.url}" allowfullscreen></iframe>
+          </div>
+        </div>`;
+    });
+  }
+});
+</script>
+
 </body>
 </html>
