@@ -1704,39 +1704,42 @@ var firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 var db = firebase.database();
 
-db.ref("content").on("value", function(snapshot) {
-  var data = snapshot.val();
-  
-  var coursesContainer = document.getElementById("courses-container");
-  var videosContainer = document.getElementById("videos-container");
+// كود جلب وتوزيع البيانات - تعديل ميجو كود 2026
+db.ref('content').on('value', (snapshot) => {
+    const data = snapshot.val();
+    const coursesList = document.getElementById('courses-container');
+    const videosList = document.getElementById('videos-container');
 
-  if (!data) return;
+    // تنظيف القوائم قبل العرض
+    if(coursesList) coursesList.innerHTML = '';
+    if(videosList) videosList.innerHTML = '';
 
-  coursesContainer.innerHTML = "";
-  videosContainer.innerHTML = "";
+    for (let id in data) {
+        const item = data[id];
+        
+        // تصميم الكارت (نفس تصميم موقعك الأصلي)
+        const cardHTML = `
+            <div class="card" style="margin-bottom:15px; border:1px solid #D4AF37;">
+                <div class="card-content" style="padding:15px;">
+                    <h3 style="color:#D4AF37;">${item.title}</h3>
+                    <p>${item.desc}</p>
+                    <small>📅 ${item.date}</small>
+                    <br><br>
+                    <a href="${item.url}" target="_blank" 
+                       style="background:#D4AF37; color:black; padding:8px 15px; text-decoration:none; border-radius:5px; font-weight:bold;">
+                        ${item.type === 'course' ? '📥 تحميل السورس' : '▶️ مشاهدة الآن'}
+                    </a>
+                </div>
+            </div>
+        `;
 
-  if (data.courses) {
-    Object.values(data.courses).forEach(item => {
-      coursesContainer.innerHTML += `
-        <div class="mego-dynamic-card">
-          <h3>${item.title}</h3>
-          <p>${item.desc}</p>
-          <a href="${item.link}" class="btn-mego-dl">Download</a>
-        </div>`;
-    });
-  }
-
-  if (data.videos) {
-    Object.values(data.videos).forEach(item => {
-      videosContainer.innerHTML += `
-        <div class="mego-dynamic-card">
-          <h3>${item.title}</h3>
-          <div class="video-frame">
-            <iframe src="${item.url}" allowfullscreen></iframe>
-          </div>
-        </div>`;
-    });
-  }
+        // التوزيع الذكي بناءً على النوع اللي بنبعته من لوحة التحكم
+        if (item.type === 'course' && coursesList) {
+            coursesList.innerHTML += cardHTML;
+        } else if (item.type === 'audio' && videosList) {
+            videosList.innerHTML += cardHTML;
+        }
+    }
 });
 </script>
 
