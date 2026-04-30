@@ -1140,6 +1140,54 @@
   font-weight: bold;
 }
 
+
+    /* --- INJECTED CSS START --- */
+    .glow-price {
+      color: #00ffcc;
+      text-shadow: 0 0 5px #00ffcc, 0 0 10px #00ffcc, 0 0 20px #00ffcc;
+      animation: pulse 1.5s infinite ease-in-out;
+      font-weight: bold;
+    }
+
+    @keyframes pulse {
+      0% { text-shadow: 0 0 5px #00ffcc; }
+      50% { text-shadow: 0 0 20px #00ffcc, 0 0 30px #00ffcc; }
+      100% { text-shadow: 0 0 5px #00ffcc; }
+    }
+
+    /* Course Card Upgrade - Safe Injection */
+    #courses-container .card, #videos-container .card {
+      border: 1px solid #D4AF37 !important;
+      background: rgba(18, 18, 22, 0.8) !important;
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      overflow: hidden;
+      position: relative;
+    }
+
+    #courses-container .card:hover, #videos-container .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(212, 175, 55, 0.2);
+    }
+
+    .old-price {
+      text-decoration: line-through;
+      color: #888;
+      margin-left: 10px;
+      font-size: 0.9em;
+    }
+
+    .discount-label {
+      background: #ff4444;
+      color: white;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.8em;
+      margin-right: 10px;
+      vertical-align: middle;
+    }
+    /* --- INJECTED CSS END --- */
   </style>
 </head>
 <body>
@@ -1717,21 +1765,46 @@ db.ref('content').on('value', (snapshot) => {
     for (let id in data) {
         const item = data[id];
         
-        // تصميم الكارت (نفس تصميم موقعك الأصلي)
+        // --- INJECTED LOGIC START ---
+        let priceHTML = '';
+        if (item.price) {
+            if (item.discount && parseFloat(item.discount) > 0) {
+                const finalPrice = parseFloat(item.price) - parseFloat(item.discount);
+                priceHTML = `
+                    <div class="price-block" style="margin: 10px 0;">
+                        <span class="glow-price">${finalPrice} ج.م</span>
+                        <span class="old-price">${item.price} ج.م</span>
+                        <span class="discount-label">خصم ${Math.round((parseFloat(item.discount)/parseFloat(item.price))*100)}%</span>
+                    </div>
+                `;
+            } else {
+                priceHTML = `
+                    <div class="price-block" style="margin: 10px 0;">
+                        <span style="color:#D4AF37; font-weight:bold;">${item.price} ج.م</span>
+                    </div>
+                `;
+            }
+        }
+
         const cardHTML = `
-            <div class="card" style="margin-bottom:15px; border:1px solid #D4AF37;">
+            <div class="card" style="margin-bottom:15px;">
                 <div class="card-content" style="padding:15px;">
-                    <h3 style="color:#D4AF37;">${item.title}</h3>
-                    <p>${item.desc}</p>
-                    <small>📅 ${item.date}</small>
-                    <br><br>
+                    <h3 style="color:#D4AF37; margin-top:0;">${item.title}</h3>
+                    <p style="color:#ccc; font-size:0.95em;">${item.desc}</p>
+                    ${priceHTML}
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:15px;">
+                        <small style="color:#888;">📅 ${item.date || ''}</small>
+                        <span class="tag" style="font-size:0.75em; padding:4px 10px;">${item.type === 'course' ? 'Course' : 'Audio'}</span>
+                    </div>
+                    <br>
                     <a href="${item.url}" target="_blank" 
-                       style="background:#D4AF37; color:black; padding:8px 15px; text-decoration:none; border-radius:5px; font-weight:bold;">
+                       style="display:block; text-align:center; background:#D4AF37; color:black; padding:10px 15px; text-decoration:none; border-radius:8px; font-weight:bold; transition:0.3s;">
                         ${item.type === 'course' ? '📥 تحميل السورس' : '▶️ مشاهدة الآن'}
                     </a>
                 </div>
             </div>
         `;
+        // --- INJECTED LOGIC END ---
 
         // التوزيع الذكي بناءً على النوع اللي بنبعته من لوحة التحكم
         if (item.type === 'course' && coursesList) {
