@@ -8,7 +8,6 @@
         :root { --gold: #D4AF37; --dark: #050505; --matrix: #00FF41; }
         body { background: var(--dark); color: white; font-family: 'Courier New', monospace; margin: 0; padding: 20px; overflow-x: hidden; }
         
-        /* تأثير خلفية الماتريكس البسيط */
         body::before {
             content: "101101001"; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             color: rgba(0, 255, 65, 0.05); font-size: 20px; word-break: break-all; z-index: -1; pointer-events: none;
@@ -25,14 +24,13 @@
         button { width: 100%; padding: 15px; background: var(--gold); color: black; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 16px; }
         button:hover { background: white; box-shadow: 0 0 10px var(--gold); }
         
-        /* قسم الإدارة */
         .course-item { display: flex; justify-content: space-between; align-items: center; background: #1a1a1a; padding: 15px; margin-bottom: 10px; border-right: 4px solid var(--gold); border-radius: 5px; }
         .del-btn { background: #ff4d4d; color: white; width: auto; padding: 5px 15px; font-size: 13px; }
         .del-btn:hover { background: white; color: red; }
         
         #status { padding: 10px; margin-top: 10px; border-radius: 5px; text-align: center; display: none; }
 
-        /* --- New Additive Styles --- */
+        /* --- Metrics & Preview Styles --- */
         .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 20px; }
         .metric-box { background: #111; border: 1px solid #333; padding: 15px; border-radius: 10px; text-align: center; }
         .metric-value { display: block; font-size: 24px; color: var(--gold); font-weight: bold; margin-top: 5px; }
@@ -47,6 +45,29 @@
         .preview-title { color: var(--gold); font-size: 18px; margin-bottom: 5px; }
         .preview-desc { color: #ccc; font-size: 14px; margin-bottom: 10px; }
         .preview-tag { display: inline-block; padding: 3px 8px; background: var(--gold); color: black; font-size: 10px; border-radius: 3px; font-weight: bold; }
+
+        /* 🔥 Glow Effect & Pricing Styles */
+        .glow-price {
+            color: #00ffcc;
+            font-weight: bold;
+            text-shadow: 0 0 5px #00ffcc, 0 0 10px #00ffcc, 0 0 20px rgba(0,255,200,0.8);
+            margin: 0 5px;
+            animation: pulseGlow 1.5s infinite alternate;
+        }
+
+        .discount-badge {
+            background: #ff4d4d;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            margin-right: 5px;
+        }
+
+        @keyframes pulseGlow {
+            from { text-shadow: 0 0 5px #00ffcc; }
+            to { text-shadow: 0 0 20px #00ffcc; }
+        }
     </style>
 </head>
 <body>
@@ -54,7 +75,6 @@
 <div class="container">
     <h1 style="text-align: center; color: var(--gold);">SYSTEM ADMIN: MEGO CODE</h1>
 
-    <!-- New Metrics Dashboard Layer -->
     <div class="metrics-grid">
         <div class="metric-box">
             <span class="metric-label">Total Courses</span>
@@ -82,6 +102,10 @@
         <input type="password" id="pass" placeholder="مفتاح الأمان الخاص بميجو">
         <input type="text" id="title" placeholder="عنوان الكورس أو المقطع الصوتي" oninput="updateLivePreview()">
         <textarea id="desc" rows="3" placeholder="وصف المحتوى..." oninput="updateLivePreview()"></textarea>
+        
+        <input type="number" id="price" placeholder="السعر الأساسي (مثال: 1000)" oninput="updateLivePreview()">
+        <input type="number" id="discount" placeholder="نسبة الخصم % (اختياري)" oninput="updateLivePreview()">
+        
         <input type="text" id="url" placeholder="رابط التحميل أو رابط ملف الصوت">
         
         <select id="type" onchange="updateLivePreview()">
@@ -92,7 +116,6 @@
         <button onclick="uploadData()">🚀 تشغيل الأمر / نـشـر</button>
         <div id="status"></div>
 
-        <!-- New Live Preview Engine -->
         <div class="preview-container" id="preview-area" style="display: none;">
             <div class="preview-card">
                 <div id="p-title" class="preview-title"></div>
@@ -121,7 +144,6 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // --- New Real-time Analytics Layer ---
     function updateMetrics(data) {
         let courses = 0;
         let videos = 0;
@@ -150,70 +172,103 @@
         document.getElementById('last-update').innerText = now.toLocaleTimeString('ar-EG', {hour: '2-digit', minute:'2-digit', second:'2-digit'});
     }
 
-    // Monitor Firebase Connection
     db.ref(".info/connected").on("value", (snap) => {
         updateHealth(snap.val() === true);
     });
 
-    // --- New Live Preview Engine ---
+    // --- نظام المعاينة المطور ---
     function updateLivePreview() {
         const title = document.getElementById('title').value;
         const desc = document.getElementById('desc').value;
         const type = document.getElementById('type').value;
+        const price = document.getElementById('price').value;
+        const discount = document.getElementById('discount').value;
         const previewArea = document.getElementById('preview-area');
         
-        if (title || desc) {
+        if (title || desc || price) {
             previewArea.style.display = 'block';
             document.getElementById('p-title').innerText = title || 'عنوان المعاينة';
-            document.getElementById('p-desc').innerText = desc || 'وصف المعاينة سيظهر هنا...';
+            
+            let priceHTML = '';
+            if (price && !isNaN(price)) {
+                if (discount && discount > 0 && discount <= 100) {
+                    const newPrice = price - (price * discount / 100);
+                    priceHTML = `
+                        <div style="margin-top:10px; border-top: 1px solid #333; padding-top:5px;">
+                            <span style="text-decoration:line-through; color:#888; font-size:12px;">${price} ج.م</span>
+                            <span class="glow-price">${newPrice.toFixed(0)} ج.م</span>
+                            <span class="discount-badge">خصم ${discount}%</span>
+                        </div>
+                    `;
+                } else {
+                    priceHTML = `<div style="margin-top:10px; border-top: 1px solid #333; padding-top:5px; color:var(--gold); font-weight:bold;">السعر: ${price} ج.م</div>`;
+                }
+            }
+
+            document.getElementById('p-desc').innerHTML = (desc || 'وصف المعاينة سيظهر هنا...') + priceHTML;
             document.getElementById('p-tag').innerText = type === 'audio' ? '🔊 صوت' : '📚 كورس';
         } else {
             previewArea.style.display = 'none';
         }
     }
 
-    // دالة النشر
+    // --- دالة النشر المطورة لـ Firebase ---
     function uploadData() {
         const pass = document.getElementById('pass').value;
         const title = document.getElementById('title').value;
         const desc = document.getElementById('desc').value;
         const url = document.getElementById('url').value;
         const type = document.getElementById('type').value;
+        const price = document.getElementById('price').value;
+        const discount = document.getElementById('discount').value;
         const status = document.getElementById('status');
 
         if(pass !== "mego2026") { alert("خطأ في مفتاح الأمان!"); return; }
 
         if(title && url) {
+            let finalPrice = null;
+            if (price && !isNaN(price)) {
+                if (discount && discount > 0) {
+                    finalPrice = price - (price * discount / 100);
+                } else {
+                    finalPrice = price;
+                }
+            }
+
             status.style.display = "block";
             status.innerText = "Processing...";
+            
             db.ref('content').push({
                 title: title,
                 desc: desc,
                 url: url,
                 type: type,
+                price: price || null,
+                discount: discount || null,
+                finalPrice: finalPrice,
                 date: new Date().toLocaleDateString('ar-EG')
             }).then(() => {
                 status.innerText = "✅ تم الإرسال للنظام بنجاح!";
-                trackUpdate(); // Track update without full reload if possible, but keeping original logic
+                trackUpdate();
                 setTimeout(() => location.reload(), 1000); 
             });
+        } else {
+            alert("يرجى إدخال العنوان والرابط على الأقل!");
         }
     }
 
-    // جلب البيانات للحذف
     db.ref('content').on('value', (snapshot) => {
         const list = document.getElementById('admin-list');
         list.innerHTML = '';
         const data = snapshot.val();
-        
-        // Update Metrics Layer
         updateMetrics(data);
         
         for (let id in data) {
+            let priceDisplay = data[id].price ? ` | <span style="color:var(--gold)">${data[id].finalPrice || data[id].price} ج.م</span>` : '';
             list.innerHTML += `
                 <div class="course-item">
                     <div>
-                        <strong>${data[id].title}</strong> <br>
+                        <strong>${data[id].title}${priceDisplay}</strong> <br>
                         <small style="color:#888">${data[id].type === 'audio' ? '🔊 صوت' : '📚 كورس'}</small>
                     </div>
                     <button class="del-btn" onclick="deleteItem('${id}')">حذف 🗑️</button>
@@ -222,7 +277,6 @@
         }
     });
 
-    // دالة الحذف
     function deleteItem(id) {
         const pass = document.getElementById('pass').value;
         if(pass === "mego2026") {
